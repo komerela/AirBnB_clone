@@ -1,52 +1,47 @@
 #!/usr/bin/python3
 """This is the file storage class for AirBnB"""
 import json
-from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
+import models
 
 
 class FileStorage:
     """This class serializes instances to a JSON file and
     deserializes JSON file to instances
-    Attributes:
-        __file_path: path to the JSON file
-        __objects: objects will be stored
     """
     __file_path = "file.json"
     __objects = {}
 
     def all(self, cls=None):
         """returns a dictionary
-        Return:
-            returns a dictionary of __object
         """
-        return self.__objects
+        new_dic = {}
+        if cls is None:
+            return self.__objects
+
+        for key, value in self.objects.item():
+            if value.__class__ == cls:
+                new_dic[key] = value
+        return new_dic
 
     def new(self, obj):
-        """sets __object to given obj
-        Args:
-            obj: given object
+        """add the object to the current session by setting obj with obj class
         """
-        if obj:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            self.__objects[key] = obj
+        key = str(obj.__class__.name__) + "." + str(obj.id)
+        value_dic = obj
+        self.__objects[key] = value_dic
 
     def save(self):
-        """serialize the file path to JSON file path
+        """serializes the object_attr to JSON file
         """
         my_dict = {}
         for key, value in self.__objects.items():
             my_dict[key] = value.to_dict()
-        with open(self.__file_path, 'w', encoding="UTF-8") as f:
-            json.dump(my_dict, f)
+
+        with open(self.__file_path, 'w', encoding="UTF-8") as fd:
+            json.dump(my_dict, fd)
 
     def reload(self):
-        """serialize the file path to JSON file path
+        """deserialize the json file path to objects
         """
         try:
             with open(self.__file_path, 'r', encoding="UTF-8") as f:
@@ -58,11 +53,18 @@ class FileStorage:
 
     def delete(self, obj=None):
         """
-            deletes obj from __objects if it's inside
+            delete obj from __objects from File storage schema
         """
-        if obj:
-            obj_ref = "{}.{}".format(type(obj).__name__, obj.id)
-            all_class_objs = self.all(obj.__class__.__name__)
-            if all_class_objs.get(obj_ref):
-                del FileStorage.__objects[obj_ref]
+        dict = FileStorage.__objects
+        if obj is not None and obj in dict.values():
+            key = obj.__class__.__name__ + '.' + str(obj.id)
+            del dict[key]
             self.save()
+        else:
+            return
+
+    def close(self):
+        """
+        Deserialize Json file to obj
+        """
+        self.reload()
