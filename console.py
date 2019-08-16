@@ -32,13 +32,17 @@ class HBNBCommand(cmd.Cmd):
         """Quit command to exit the program at end of file"""
         return True
 
-    def do_create(self, line):
-        """Creates a new instance of BaseModel, saves it
-        Exceptions:
-            SyntaxError: when there is no args given
-            NameError: when there is no object taht has the name
+    def do_create(self, arg):
+        """create <Class name> <param 1> <param 2>...
+        Creates an instance of the class from command line input arg and param
+        e.g. 
+        create State name="California"
+        State.create(name="California")
+            type string => <key name>=<"value"> Value starts with double quotes
+            type float => <unit>.<decimal>
+            type integer => <number>
         """
-        try:
+        """ try:
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
@@ -49,6 +53,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         except NameError:
             print("** class doesn't exist **")
+            """
 
     def do_show(self, line):
         """Prints the string representation of an instance
