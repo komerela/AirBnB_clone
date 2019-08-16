@@ -64,26 +64,27 @@ class HBNBCommand(cmd.Cmd):
                     key, value = args[a].split('=')
                     if value[0] == '"' and val[len(val) - 1 == '"':
                         value == value[1:len(val) - 1]
-                    "
+                        if "_" in value:
                             value = value.replace('_', ' ')
-                            value = str(value)
-                            elif isinstance(eval(value), float):
+                        value = str(value)
+
+                        elif isinstance(eval(value), float):
                             value = float(value)
 
-                            elif isinstance(eval(value), int):
+                        elif isinstance(eval(value), int):
                             value = int(value)
 
-                            else:
+                        else:
                             continue
 
-                            setattr(new_instance, key, value)
+                        setattr(new_instance, key, value)
 
-                            new_instance.save()
-                            print(new_instance.id)
+                new_instance.save()
+                print(new_instance.id)
 
-                            except Exception as e:
-                            print(e)
-                            print("** class doesn't exist **")
+            except Exception as e:
+                print(e)
+                print("** class doesn't exist **")
 
     def do_show(self, args):
     """
@@ -104,11 +105,11 @@ class HBNBCommand(cmd.Cmd):
         except NameError:
             print("** class doesn't exist **")
             return
-        key= args[0] + "." + args[1]
-        key= args[0] + "." + args[1]
+        key = args[0] + "." + args[1]
+        key = args[0] + "." + args[1]
         try:
-            val= my_dict[key]
-            print(value)
+            val = my_dict[key]
+            print(val)
         except KeyError:
             print("** no instance found **")
 
@@ -163,16 +164,16 @@ class HBNBCommand(cmd.Cmd):
                 my_list.append(val)
         print(my_list)
 
-    def do_update(self, line):
-    """
-    Updates an instanceby adding or updating attribute
-    """
-    storage= FileStorage()
-    storage.reload()
-    args= shlex.split(args)
-    if len(args) == 0:
-        print("** class name missing **")
-        return
+    def do_update(self, args):
+        """
+        Updates an instanceby adding or updating attribute
+        """
+        storage= FileStorage()
+        storage.reload()
+        args= shlex.split(args)
+        if len(args) == 0:
+            print("** class name missing **")
+            return
         elif len(args) == 1:
             print("** instance id missing **")
             return
@@ -187,20 +188,20 @@ class HBNBCommand(cmd.Cmd):
         except NameError:
             print("** class doesn't exist **")
             return
-        key= args[0] + "." + args[1]
-        my_dict= storage.all()
+        key = args[0] + "." + args[1]
+        my_dict = storage.all()
         try:
-            obj_val= my_dict[key]
+            obj_value = obj_dict[key]
         except KeyError:
             print("** no instance found **")
             return
         try:
-            attr_type= type(getattr(obj_val, args[2]))
-            args[3]= attr_type(args[3])
+            attr_type = type(getattr(obj_value, args[2]))
+            args[3] = attr_type(args[3])
         except AttributeError:
             pass
-        setattr(obj_val, args[2], args[3])
-        obj_val.save()
+        setattr(obj_value, args[2], args[3])
+        obj_value.save()
 
     def count(self, args):
         """
