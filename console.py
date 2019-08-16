@@ -61,22 +61,22 @@ class HBNBCommand(cmd.Cmd):
             new_instance = eval(args[0])()
             if len(args) > 1:
                 for a in range(1, len(args)):
-                    key, val = args[a].split('=')
-                    if val[0] == '"' and val[len(val) - 1 == '"':
-                    val= val[1:len(val) - 1]
-                        if '_' in val:
-                            val= val.replace('_', ' ')
-                            val= str(val)
-                            elif isinstance(eval(val), float):
-                            val= float(val)
+                    key, value = args[a].split('=')
+                    if value[0] == '"' and val[len(val) - 1 == '"':
+                        value == value[1:len(val) - 1]
+                    "
+                            value = value.replace('_', ' ')
+                            value = str(value)
+                            elif isinstance(eval(value), float):
+                            value = float(value)
 
                             elif isinstance(eval(value), int):
-                            val= int(val)
+                            value = int(value)
 
                             else:
                             continue
 
-                            setattr(new_instance, key, val)
+                            setattr(new_instance, key, value)
 
                             new_instance.save()
                             print(new_instance.id)
@@ -253,28 +253,18 @@ class HBNBCommand(cmd.Cmd):
         """
         Checks for the function names not even covered
         """
-        my_list= line.split('.')
-        if len(my_list) >= 2:
-            if my_list[1] == "all()":
-                self.do_all(my_list[0])
-            elif my_list[1] == "count()":
-                self.count(my_list[0])
-            elif my_list[1][:4] == "show":
-                self.do_show(self.strip_clean(my_list))
-            elif my_list[1][:7] == "destroy":
-                self.do_destroy(self.strip_clean(my_list))
-            elif my_list[1][:6] == "update":
-                args= self.strip_clean(my_list)
-                if isinstance(args, list):
-                    obj= storage.all()
-                    key= args[0] + ' ' + args[1]
-                    for k, v in args[2].items():
-                        self.do_update(key + ' "{}" "{}"'.format(k, v))
-                else:
-                    self.do_update(args)
-        else:
-            cmd.Cmd.default(self, args)
+        functions = {"all": self.do_all, "update": self.do_update,
+                     "show": self.do_show, "count": self.do_count,
+                     "destroy": self.do_destroy, "update": self.do_update}
+        args = (args.replace("(", ".").replace(")", ".")
+                .replace('"', "").replace(",", "").split("."))
 
+        try:
+            cmd_arg = args[0] + " " + args[2]
+            func = functions[args[1]]
+            func(cmd_arg)
+        except:
+            print("*** Unknown syntax:", args[0])
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
